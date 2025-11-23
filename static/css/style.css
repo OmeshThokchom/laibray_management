@@ -181,6 +181,11 @@ body {
     background: rgba(255, 255, 255, 0.05);
 }
 
+.user-profile {
+    position: relative;
+    cursor: pointer;
+}
+
 .avatar {
     width: 32px;
     height: 32px;
@@ -192,6 +197,91 @@ body {
     color: #333;
     font-weight: bold;
     font-size: 0.9rem;
+    transition: transform 0.2s;
+}
+
+.avatar:hover {
+    transform: scale(1.05);
+}
+
+/* --- PROFILE MENU --- */
+.profile-menu {
+    display: none;
+    position: absolute;
+    top: 45px;
+    right: 0;
+    width: 200px;
+    background: rgba(40, 40, 40, 0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-m);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    padding: 0.5rem;
+    z-index: 1000;
+    animation: menuFade 0.2s ease-out;
+}
+
+.profile-menu.active {
+    display: block;
+}
+
+@keyframes menuFade {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.menu-header {
+    padding: 0.5rem 1rem;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+.user-role {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.profile-menu hr {
+    border: none;
+    border-top: 1px solid var(--separator-color);
+    margin: 0.5rem 0;
+}
+
+.menu-items {
+    list-style: none;
+}
+
+.menu-items li {
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-s);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.2s;
+}
+
+.menu-items li:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+.menu-items li.danger:hover {
+    background: var(--danger-color);
 }
 
 #content-area {
@@ -387,62 +477,88 @@ select:focus {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: radial-gradient(circle at center, #2d2d2d 0%, #1a1a1a 100%);
+    background: radial-gradient(circle at center, #2d2d2d 0%, #000000 100%);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 9999;
     transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s step-end;
+    opacity: 0;
+    visibility: hidden;
 }
 
 .login-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
+    gap: 2rem;
     transform: translateY(-20px);
 }
 
-.login-avatar img {
-    width: 96px;
-    height: 96px;
-    border-radius: 50%;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+.brand-logo {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #0a84ff 0%, #0077ed 100%);
+    border-radius: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 20px 60px rgba(10, 132, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 0.5rem;
+}
+
+.text-center {
+    text-align: center;
 }
 
 .login-name {
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 2.5rem;
+    font-weight: 700;
     color: #fff;
-    letter-spacing: -0.02em;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.2rem;
+    background: linear-gradient(180deg, #fff 0%, #ccc 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.login-subtitle {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 .login-form {
     display: flex;
     align-items: center;
-    background: rgba(50, 50, 50, 0.6);
-    border-radius: 20px;
-    padding: 4px;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s ease, border-color 0.2s;
-    width: 220px;
+    background: rgba(30, 30, 30, 0.6);
+    border-radius: 16px;
+    padding: 8px 8px 8px 20px;
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    width: 320px;
+    margin-top: 1rem;
 }
 
 .login-form:focus-within {
-    border-color: rgba(255, 255, 255, 0.3);
-    background: rgba(60, 60, 60, 0.7);
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(100, 100, 100, 0.5);
+    transform: scale(1.02);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 
 .login-form.shake {
     animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
     border-color: var(--danger-color);
+    background: rgba(255, 69, 58, 0.2);
 }
 
 @keyframes shake {
@@ -473,42 +589,51 @@ select:focus {
     background: transparent;
     border: none;
     color: #fff;
-    padding: 8px 12px;
-    font-size: 13px;
+    padding: 8px 0;
+    font-size: 15px;
     outline: none;
     width: 100%;
     font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    /* Masking dots spacing */
 }
 
 #loginPassword::placeholder {
     color: rgba(255, 255, 255, 0.4);
     letter-spacing: normal;
+    font-size: 14px;
 }
 
 .login-btn {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     border: none;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     transition: all 0.2s;
-    margin-right: 4px;
+    margin-left: 8px;
 }
 
 .login-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--accent-color);
     color: #fff;
+    transform: scale(1.1);
 }
 
 .login-hint {
-    font-size: 12px;
+    font-size: 13px;
     color: rgba(255, 255, 255, 0.3);
-    margin-top: 2rem;
+    margin-top: 3rem;
     font-weight: 500;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.login-hint:hover {
+    opacity: 1;
 }

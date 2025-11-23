@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lumina Library</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
     <link rel="stylesheet" href="/static/css/style.css">
     <!-- System Fonts & Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -18,15 +20,17 @@
     <!-- LOGIN SCREEN (macOS Lock Style) -->
     <div id="loginScreen">
         <div class="login-content">
-            <div class="login-avatar">
-                <img src="https://ui-avatars.com/api/?name=Admin&background=0a84ff&color=fff&size=128" alt="User">
+            <div class="brand-logo">
+                <i class="ph ph-books" style="font-size: 64px; color: #fff;"></i>
             </div>
-            <h2 class="login-name">Admin</h2>
+            <div class="text-center">
+                <h2 class="login-name">Lumina Library</h2>
+                <p class="login-subtitle">Management System</p>
+            </div>
             <form onsubmit="handleLogin(event)" class="login-form">
-                <input type="password" id="loginPassword" placeholder="Enter Password" required>
+                <input type="password" id="loginPassword" placeholder="Enter Admin Password" required>
                 <button type="submit" class="login-btn"><i class="ph ph-arrow-right"></i></button>
             </form>
-            <p class="login-hint">Hint: admin</p>
         </div>
     </div>
 
@@ -58,8 +62,20 @@
                 <h1 id="page-title">Dashboard</h1>
                 <div class="toolbar">
                     <button class="icon-btn"><i class="ph ph-bell"></i></button>
-                    <div class="user-profile">
+                    <div class="user-profile" onclick="toggleProfileMenu()">
                         <div class="avatar">A</div>
+                        <!-- Profile Dropdown -->
+                        <div id="profileMenu" class="profile-menu">
+                            <div class="menu-header">
+                                <p class="user-name">Admin User</p>
+                                <p class="user-role">Administrator</p>
+                            </div>
+                            <hr>
+                            <ul class="menu-items">
+                                <li><i class="ph ph-gear"></i> Settings</li>
+                                <li onclick="handleLogout()" class="danger"><i class="ph ph-sign-out"></i> Log Out</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </header>

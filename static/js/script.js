@@ -4,18 +4,34 @@ const API_BASE = '/api';
 let currentView = 'dashboard';
 
 // Navigation
-function navigateTo(view) {
+// Navigation
+function navigateTo(view, addToHistory = true) {
     currentView = view;
     document.querySelectorAll('.nav-links li').forEach(li => {
         li.classList.remove('active');
-        if (li.innerText.toLowerCase() === view) li.classList.add('active');
+        if (li.innerText.toLowerCase().includes(view)) li.classList.add('active');
     });
 
     const title = view.charAt(0).toUpperCase() + view.slice(1);
     document.getElementById('page-title').innerText = title;
+    document.title = `${title} - Lumina Library`;
+
+    if (addToHistory) {
+        history.pushState({ view: view }, '', `/${view}`);
+    }
 
     renderView(view);
 }
+
+window.onpopstate = function (event) {
+    if (event.state && event.state.view) {
+        navigateTo(event.state.view, false);
+    } else {
+        // Handle initial load or empty state
+        const path = window.location.pathname.substring(1) || 'dashboard';
+        navigateTo(path, false);
+    }
+};
 
 async function renderView(view) {
     const content = document.getElementById('content-area');
@@ -498,7 +514,9 @@ function showApp() {
     document.getElementById('loginScreen').style.opacity = '0';
     document.getElementById('loginScreen').style.visibility = 'hidden';
     document.querySelector('.app-container').style.display = 'flex';
-    navigateTo('dashboard');
+
+    const path = window.location.pathname.substring(1) || 'dashboard';
+    navigateTo(path, false);
 }
 
 function showLogin() {
@@ -507,7 +525,38 @@ function showLogin() {
     document.querySelector('.app-container').style.display = 'none';
 }
 
+// Shortcuts
+document.addEventListener('keydown', async (e) => {
+    // Ctrl+L to Logout
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'l') {
+        e.preventDefault();
+        handleLogout();
+    }
+});
+
+// --- PROFILE MENU ---
+function toggleProfileMenu() {
+    const menu = document.getElementById('profileMenu');
+    menu.classList.toggle('active');
+}
+
+// Close menu when clicking outside
+window.addEventListener('click', (e) => {
+    if (!e.target.closest('.user-profile')) {
+        document.getElementById('profileMenu').classList.remove('active');
+    }
+});
+
+async function handleLogout() {
+    const confirmed = await showConfirm('Log out of system?');
+    if (confirmed) {
+        await fetch(`${API_BASE}/logout`, { method: 'POST' });
+        showLogin();
+    }
+}
+
 // Init
 document.addEventListener('DOMContentLoaded', () => {
     checkSession();
+    // Initial navigation based on URL is handled after session check or in showApp
 });

@@ -27,8 +27,11 @@ def check_session():
 # --- API ROUTES ---
 dm = DataManager()
 
-@app.route('/')
-def index():
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
     return send_from_directory('static', 'index.html')
 
 # --- API: BOOKS ---
