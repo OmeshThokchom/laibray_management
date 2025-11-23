@@ -5,7 +5,8 @@
     "member_id": "M-2024-001",
     "issue_date": "2025-11-20",
     "due_date": "2025-12-04",
-    "status": "issued"
+    "status": "returned",
+    "return_date": "2025-11-23"
   },
   {
     "id": 5002,
@@ -22,5 +23,14 @@
     "issue_date": "2025-11-23",
     "due_date": "2025-12-07",
     "status": "issued"
+  },
+  {
+    "id": 5004,
+    "book_id": 105,
+    "member_id": "M-2024-002",
+    "issue_date": "2025-11-23",
+    "due_date": "2025-12-07",
+    "status": "returned",
+    "return_date": "2025-11-23"
   }
 ]

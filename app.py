@@ -1,8 +1,30 @@
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, session, session
 from data_manager import DataManager
 import os
 
 app = Flask(__name__, static_folder='static')
+app.secret_key = 'mac_os_secret_key'  # Required for sessions
+
+# --- AUTH ROUTES ---
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.json
+    # Hardcoded admin for demo
+    if data.get('username') == 'admin' and data.get('password') == 'admin':
+        session['user'] = 'admin'
+        return jsonify({"success": True})
+    return jsonify({"error": "Invalid credentials"}), 401
+
+@app.route('/api/logout', methods=['POST'])
+def logout():
+    session.pop('user', None)
+    return jsonify({"success": True})
+
+@app.route('/api/session', methods=['GET'])
+def check_session():
+    return jsonify({"logged_in": 'user' in session})
+
+# --- API ROUTES ---
 dm = DataManager()
 
 @app.route('/')

@@ -40,27 +40,17 @@
 }
 
 body {
-    background-color: #000;
-    /* Outer space */
+    background-color: var(--bg-app);
     color: var(--text-primary);
     height: 100vh;
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-image: url('https://4kwallpapers.com/images/wallpapers/macos-big-sur-apple-layers-fluidic-colorful-dark-wwdc-2020-5120x2880-1455.jpg');
-    background-size: cover;
-    background-position: center;
 }
 
 .app-container {
     display: flex;
-    width: 90vw;
-    height: 85vh;
+    width: 100vw;
+    height: 100vh;
     background: var(--bg-app);
-    border-radius: 18px;
-    box-shadow: var(--shadow-depth);
-    border: 1px solid rgba(255, 255, 255, 0.15);
     overflow: hidden;
     position: relative;
 }
@@ -388,4 +378,137 @@ select:focus {
 
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3);
+}
+
+/* --- LOGIN SCREEN --- */
+#loginScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at center, #2d2d2d 0%, #1a1a1a 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s step-end;
+}
+
+.login-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    transform: translateY(-20px);
+}
+
+.login-avatar img {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.login-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 0.5rem;
+}
+
+.login-form {
+    display: flex;
+    align-items: center;
+    background: rgba(50, 50, 50, 0.6);
+    border-radius: 20px;
+    padding: 4px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, border-color 0.2s;
+    width: 220px;
+}
+
+.login-form:focus-within {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(60, 60, 60, 0.7);
+}
+
+.login-form.shake {
+    animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+    border-color: var(--danger-color);
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
+
+#loginPassword {
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 8px 12px;
+    font-size: 13px;
+    outline: none;
+    width: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+    letter-spacing: 1px;
+}
+
+#loginPassword::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: normal;
+}
+
+.login-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+    margin-right: 4px;
+}
+
+.login-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
+.login-hint {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.3);
+    margin-top: 2rem;
+    font-weight: 500;
 }

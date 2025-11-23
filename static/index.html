@@ -15,15 +15,25 @@
 </head>
 
 <body>
-    <div class="app-container">
+    <!-- LOGIN SCREEN (macOS Lock Style) -->
+    <div id="loginScreen">
+        <div class="login-content">
+            <div class="login-avatar">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=0a84ff&color=fff&size=128" alt="User">
+            </div>
+            <h2 class="login-name">Admin</h2>
+            <form onsubmit="handleLogin(event)" class="login-form">
+                <input type="password" id="loginPassword" placeholder="Enter Password" required>
+                <button type="submit" class="login-btn"><i class="ph ph-arrow-right"></i></button>
+            </form>
+            <p class="login-hint">Hint: admin</p>
+        </div>
+    </div>
+
+    <div class="app-container" style="display: none;">
         <!-- Sidebar -->
         <nav class="sidebar">
-            <div class="window-controls">
-                <div class="control red"></div>
-                <div class="control yellow"></div>
-                <div class="control green"></div>
-            </div>
-            <div class="sidebar-menu">
+            <div class="sidebar-menu" style="margin-top: 2rem;">
                 <div class="menu-label">Library</div>
                 <ul class="nav-links">
                     <li class="active" onclick="navigateTo('dashboard')">
@@ -105,6 +115,18 @@
                 </select>
                 <button type="submit" class="btn btn-primary">Issue Book</button>
             </form>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirmModal" class="modal" style="z-index: 200;">
+        <div class="modal-content" style="width: 300px; text-align: center;">
+            <h3 id="confirmMessage" style="margin-bottom: 1.5rem;">Are you sure?</h3>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button class="btn" onclick="resolveConfirm(false)"
+                    style="background: rgba(255,255,255,0.1); color: white;">Cancel</button>
+                <button class="btn btn-primary" onclick="resolveConfirm(true)">Confirm</button>
+            </div>
         </div>
     </div>
 

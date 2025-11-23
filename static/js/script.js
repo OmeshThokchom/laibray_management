@@ -161,6 +161,7 @@ async function handleAddBook(e) {
     if (res.ok) {
         closeModal('addBookModal');
         e.target.reset();
+        booksData = []; // Clear cache
         renderBooks(document.getElementById('content-area'));
     } else {
         alert('Error adding book');
@@ -184,6 +185,7 @@ async function handleAddMember(e) {
     if (res.ok) {
         closeModal('addMemberModal');
         e.target.reset();
+        membersData = []; // Clear cache
         renderMembers(document.getElementById('content-area'));
     } else {
         alert('Error adding member');
@@ -223,6 +225,8 @@ async function handleIssueBook(e) {
     if (res.ok) {
         closeModal('issueBookModal');
         e.target.reset();
+        // Clear cache to force refresh
+        booksData = [];
         renderCirculation(document.getElementById('content-area'));
     } else {
         const err = await res.json();
@@ -231,16 +235,23 @@ async function handleIssueBook(e) {
 }
 
 // Updated Render Functions to use Modals
-async function renderBooks(container) {
-    const books = await fetch(`${API_BASE}/books`).then(r => r.json());
+// Global data cache for client-side filtering
+let booksData = [];
+let membersData = [];
+let issuesData = [];
 
-    let html = `
+async function renderBooks(container) {
+    if (booksData.length === 0) {
+        booksData = await fetch(`${API_BASE}/books`).then(r => r.json());
+    }
+
+    container.innerHTML = `
         <div class="card">
             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                <input type="text" placeholder="Search books..." style="margin-bottom: 0;">
+                <input type="text" id="bookSearch" placeholder="Search books..." style="margin-bottom: 0;" oninput="filterBooks()">
                 <button class="btn btn-primary" onclick="openModal('addBookModal')">+ Add Book</button>
             </div>
-            <table>
+            <table id="booksTable">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -251,32 +262,48 @@ async function renderBooks(container) {
                     </tr>
                 </thead>
                 <tbody>
-                    ${books.map(b => `
-                        <tr>
-                            <td>#${b.id}</td>
-                            <td>${b.title}</td>
-                            <td>${b.author}</td>
-                            <td><span style="background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">${b.category}</span></td>
-                            <td>${b.available_copies} / ${b.total_copies}</td>
-                        </tr>
-                    `).join('')}
+                    ${generateBooksRows(booksData)}
                 </tbody>
             </table>
         </div>
     `;
-    container.innerHTML = html;
+}
+
+function filterBooks() {
+    const term = document.getElementById('bookSearch').value.toLowerCase();
+    const filtered = booksData.filter(b =>
+        b.title.toLowerCase().includes(term) ||
+        b.author.toLowerCase().includes(term) ||
+        b.category.toLowerCase().includes(term)
+    );
+    document.querySelector('#booksTable tbody').innerHTML = generateBooksRows(filtered);
+}
+
+function generateBooksRows(books) {
+    if (books.length === 0) return '<tr><td colspan="5" style="text-align:center; color: var(--text-secondary);">No books found</td></tr>';
+    return books.map(b => `
+        <tr>
+            <td>#${b.id}</td>
+            <td>${b.title}</td>
+            <td>${b.author}</td>
+            <td><span style="background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">${b.category}</span></td>
+            <td>${b.available_copies} / ${b.total_copies}</td>
+        </tr>
+    `).join('');
 }
 
 async function renderMembers(container) {
-    const members = await fetch(`${API_BASE}/members`).then(r => r.json());
+    if (membersData.length === 0) {
+        membersData = await fetch(`${API_BASE}/members`).then(r => r.json());
+    }
 
     container.innerHTML = `
         <div class="card">
              <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                <input type="text" placeholder="Search members..." style="margin-bottom: 0;">
+                <input type="text" id="memberSearch" placeholder="Search members..." style="margin-bottom: 0;" oninput="filterMembers()">
                 <button class="btn btn-primary" onclick="openModal('addMemberModal')">+ Add Member</button>
             </div>
-            <table>
+            <table id="membersTable">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -286,30 +313,54 @@ async function renderMembers(container) {
                     </tr>
                 </thead>
                 <tbody>
-                    ${members.map(m => `
-                        <tr>
-                            <td>${m.id}</td>
-                            <td>${m.name}</td>
-                            <td>${m.email}</td>
-                            <td>${m.joined_date}</td>
-                        </tr>
-                    `).join('')}
+                    ${generateMembersRows(membersData)}
                 </tbody>
             </table>
         </div>
     `;
 }
 
+function filterMembers() {
+    const term = document.getElementById('memberSearch').value.toLowerCase();
+    const filtered = membersData.filter(m =>
+        m.name.toLowerCase().includes(term) ||
+        m.email.toLowerCase().includes(term) ||
+        m.id.toLowerCase().includes(term)
+    );
+    document.querySelector('#membersTable tbody').innerHTML = generateMembersRows(filtered);
+}
+
+function generateMembersRows(members) {
+    if (members.length === 0) return '<tr><td colspan="4" style="text-align:center; color: var(--text-secondary);">No members found</td></tr>';
+    return members.map(m => `
+        <tr>
+            <td>${m.id}</td>
+            <td>${m.name}</td>
+            <td>${m.email}</td>
+            <td>${m.joined_date}</td>
+        </tr>
+    `).join('');
+}
+
 async function renderCirculation(container) {
-    const issues = await fetch(`${API_BASE}/issues`).then(r => r.json());
+    // Always fetch fresh data for circulation to ensure status is up to date
+    issuesData = await fetch(`${API_BASE}/issues`).then(r => r.json());
 
     container.innerHTML = `
         <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h3>Active Issues</h3>
+                <h3>Circulation History</h3>
                 <button class="btn btn-primary" onclick="prepareIssueModal()">Issue New Book</button>
             </div>
-            <table>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <input type="text" id="issueSearch" placeholder="Search by ID, Member, or Book ID..." style="margin-bottom: 0; flex: 2;" oninput="filterIssues()">
+                <select id="issueFilter" style="margin-bottom: 0; flex: 1;" onchange="filterIssues()">
+                    <option value="all">All Status</option>
+                    <option value="issued">Issued</option>
+                    <option value="returned">Returned</option>
+                </select>
+            </div>
+            <table id="issuesTable">
                 <thead>
                     <tr>
                         <th>Issue ID</th>
@@ -321,32 +372,77 @@ async function renderCirculation(container) {
                     </tr>
                 </thead>
                 <tbody>
-                    ${issues.map(i => `
-                        <tr>
-                            <td>#${i.id}</td>
-                            <td>${i.book_id}</td>
-                            <td>${i.member_id}</td>
-                            <td>${i.due_date}</td>
-                            <td>
-                                <span style="color: ${i.status === 'issued' ? 'var(--accent-color)' : 'var(--success-color)'}">
-                                    ${i.status.toUpperCase()}
-                                </span>
-                            </td>
-                            <td>
-                                ${i.status === 'issued' ?
-            `<button class="btn btn-primary" style="font-size: 0.8rem; padding: 0.3rem 0.8rem;" onclick="returnBook(${i.id})">Return</button>`
-            : '-'}
-                            </td>
-                        </tr>
-                    `).join('')}
+                    ${generateIssuesRows(issuesData)}
                 </tbody>
             </table>
         </div>
     `;
 }
 
+function filterIssues() {
+    const term = document.getElementById('issueSearch').value.toLowerCase();
+    const status = document.getElementById('issueFilter').value;
+
+    const filtered = issuesData.filter(i => {
+        const matchesTerm =
+            i.id.toString().includes(term) ||
+            i.book_id.toString().includes(term) ||
+            i.member_id.toLowerCase().includes(term);
+
+        const matchesStatus = status === 'all' || i.status === status;
+
+        return matchesTerm && matchesStatus;
+    });
+
+    document.querySelector('#issuesTable tbody').innerHTML = generateIssuesRows(filtered);
+}
+
+function generateIssuesRows(issues) {
+    // Sort by ID descending (newest first)
+    const sorted = [...issues].sort((a, b) => b.id - a.id);
+
+    if (sorted.length === 0) return '<tr><td colspan="6" style="text-align:center; color: var(--text-secondary);">No records found</td></tr>';
+
+    return sorted.map(i => `
+        <tr>
+            <td>#${i.id}</td>
+            <td>${i.book_id}</td>
+            <td>${i.member_id}</td>
+            <td>${i.due_date}</td>
+            <td>
+                <span style="color: ${i.status === 'issued' ? 'var(--accent-color)' : 'var(--success-color)'}">
+                    ${i.status.toUpperCase()}
+                </span>
+                ${i.status === 'returned' ? `<span style="font-size:0.8em; color:var(--text-secondary); display:block;">Ret: ${i.return_date || 'N/A'}</span>` : ''}
+            </td>
+            <td>
+                ${i.status === 'issued' ?
+            `<button class="btn btn-primary" style="font-size: 0.8rem; padding: 0.3rem 0.8rem;" onclick="returnBook(${i.id})">Return</button>`
+            : '-'}
+            </td>
+        </tr>
+    `).join('');
+}
+
+// --- CONFIRM MODAL ---
+let confirmResolver = null;
+
+function showConfirm(message) {
+    document.getElementById('confirmMessage').innerText = message;
+    document.getElementById('confirmModal').style.display = 'flex';
+    return new Promise((resolve) => {
+        confirmResolver = resolve;
+    });
+}
+
+function resolveConfirm(result) {
+    document.getElementById('confirmModal').style.display = 'none';
+    if (confirmResolver) confirmResolver(result);
+}
+
 async function returnBook(issueId) {
-    if (!confirm('Confirm return?')) return;
+    const confirmed = await showConfirm('Confirm return?');
+    if (!confirmed) return;
 
     const res = await fetch(`${API_BASE}/return`, {
         method: 'POST',
@@ -361,7 +457,57 @@ async function returnBook(issueId) {
     }
 }
 
+// --- AUTHENTICATION ---
+
+async function checkSession() {
+    try {
+        const res = await fetch(`${API_BASE}/session`);
+        const data = await res.json();
+        if (data.logged_in) {
+            showApp();
+        } else {
+            showLogin();
+        }
+    } catch (e) {
+        showLogin();
+    }
+}
+
+async function handleLogin(e) {
+    e.preventDefault();
+    const password = document.getElementById('loginPassword').value;
+
+    // Simple demo login
+    const res = await fetch(`${API_BASE}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: 'admin', password: password })
+    });
+
+    if (res.ok) {
+        showApp();
+    } else {
+        const form = document.querySelector('.login-form');
+        form.classList.add('shake');
+        setTimeout(() => form.classList.remove('shake'), 500);
+        document.getElementById('loginPassword').value = '';
+    }
+}
+
+function showApp() {
+    document.getElementById('loginScreen').style.opacity = '0';
+    document.getElementById('loginScreen').style.visibility = 'hidden';
+    document.querySelector('.app-container').style.display = 'flex';
+    navigateTo('dashboard');
+}
+
+function showLogin() {
+    document.getElementById('loginScreen').style.opacity = '1';
+    document.getElementById('loginScreen').style.visibility = 'visible';
+    document.querySelector('.app-container').style.display = 'none';
+}
+
 // Init
 document.addEventListener('DOMContentLoaded', () => {
-    navigateTo('dashboard');
+    checkSession();
 });
