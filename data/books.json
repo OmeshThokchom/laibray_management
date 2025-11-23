@@ -1,0 +1,34 @@
+[
+  {
+    "id": 101,
+    "title": "The Pragmatic Programmer",
+    "author": "Andy Hunt",
+    "category": "Tech",
+    "total_copies": 5,
+    "available_copies": 3
+  },
+  {
+    "id": 102,
+    "title": "Clean Code",
+    "author": "Robert C. Martin",
+    "category": "Tech",
+    "total_copies": 3,
+    "available_copies": 3
+  },
+  {
+    "id": 103,
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "category": "Fiction",
+    "total_copies": 2,
+    "available_copies": 0
+  },
+  {
+    "title": "Test Book",
+    "author": "Tester",
+    "category": "Test",
+    "total_copies": 5,
+    "id": 104,
+    "available_copies": 4
+  }
+]

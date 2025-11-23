@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina Library</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- System Fonts & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="window-controls">
+                <div class="control red"></div>
+                <div class="control yellow"></div>
+                <div class="control green"></div>
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-label">Library</div>
+                <ul class="nav-links">
+                    <li class="active" onclick="navigateTo('dashboard')">
+                        <i class="ph ph-squares-four"></i> Dashboard
+                    </li>
+                    <li onclick="navigateTo('books')">
+                        <i class="ph ph-books"></i> Books
+                    </li>
+                    <li onclick="navigateTo('members')">
+                        <i class="ph ph-users"></i> Members
+                    </li>
+                    <li onclick="navigateTo('circulation')">
+                        <i class="ph ph-arrows-left-right"></i> Circulation
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="title-bar">
+                <h1 id="page-title">Dashboard</h1>
+                <div class="toolbar">
+                    <button class="icon-btn"><i class="ph ph-bell"></i></button>
+                    <div class="user-profile">
+                        <div class="avatar">A</div>
+                    </div>
+                </div>
+            </header>
+
+            <div id="content-area">
+                <!-- Dynamic Content Loads Here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- MODALS -->
+
+    <!-- Add Book Modal -->
+    <div id="addBookModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addBookModal')">&times;</span>
+            <h2>Add New Book</h2>
+            <form onsubmit="handleAddBook(event)">
+                <input type="text" id="bookTitle" placeholder="Title" required>
+                <input type="text" id="bookAuthor" placeholder="Author" required>
+                <input type="text" id="bookCategory" placeholder="Category" required>
+                <input type="number" id="bookCopies" placeholder="Total Copies" required min="1">
+                <button type="submit" class="btn btn-primary">Add Book</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Member Modal -->
+    <div id="addMemberModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addMemberModal')">&times;</span>
+            <h2>Add New Member</h2>
+            <form onsubmit="handleAddMember(event)">
+                <input type="text" id="memberName" placeholder="Full Name" required>
+                <input type="email" id="memberEmail" placeholder="Email" required>
+                <input type="text" id="memberPhone" placeholder="Phone" required>
+                <button type="submit" class="btn btn-primary">Add Member</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Issue Book Modal -->
+    <div id="issueBookModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('issueBookModal')">&times;</span>
+            <h2>Issue Book</h2>
+            <form onsubmit="handleIssueBook(event)">
+                <select id="issueMemberSelect" required>
+                    <option value="">Select Member</option>
+                </select>
+                <select id="issueBookSelect" required>
+                    <option value="">Select Book</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Issue Book</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/static/js/script.js"></script>
+</body>
+
+</html>

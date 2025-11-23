@@ -1,0 +1,26 @@
+[
+  {
+    "id": 5001,
+    "book_id": 101,
+    "member_id": "M-2024-001",
+    "issue_date": "2025-11-20",
+    "due_date": "2025-12-04",
+    "status": "issued"
+  },
+  {
+    "id": 5002,
+    "book_id": 103,
+    "member_id": "M-2024-002",
+    "issue_date": "2025-11-10",
+    "due_date": "2025-11-24",
+    "status": "issued"
+  },
+  {
+    "id": 5003,
+    "book_id": 104,
+    "member_id": "M-2024-001",
+    "issue_date": "2025-11-23",
+    "due_date": "2025-12-07",
+    "status": "issued"
+  }
+]
