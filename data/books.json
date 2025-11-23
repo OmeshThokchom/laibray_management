@@ -38,5 +38,13 @@
     "total_copies": 5,
     "id": 105,
     "available_copies": 5
+  },
+  {
+    "title": "java",
+    "author": "abc",
+    "category": "Tech",
+    "total_copies": 10,
+    "id": 106,
+    "available_copies": 10
   }
 ]

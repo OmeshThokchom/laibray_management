@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, send_from_directory, session, session
 from data_manager import DataManager
 import os
+from datetime import datetime
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'mac_os_secret_key'  # Required for sessions
@@ -26,6 +27,35 @@ def check_session():
 
 # --- API ROUTES ---
 dm = DataManager()
+
+from report_generator import generate_report
+import io
+from flask import send_file
+
+@app.route('/api/export/pdf', methods=['GET'])
+def export_pdf():
+    if 'user' not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+        
+    stats = dm.get_stats()
+    books = dm.load_data('books.json')
+    members = dm.load_data('members.json')
+    issues = dm.load_data('issued.json')
+    
+    pdf = generate_report(stats, books, members, issues)
+    
+    # Save to buffer
+    buffer = io.BytesIO()
+    pdf_output = pdf.output(dest='S').encode('latin-1')
+    buffer.write(pdf_output)
+    buffer.seek(0)
+    
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name=f'library_report_{datetime.now().strftime("%Y%m%d")}.pdf',
+        mimetype='application/pdf'
+    )
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
